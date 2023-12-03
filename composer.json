@@ -1,0 +1,20 @@
+{
+  "name": "thiago-rizzo/presentationphp",
+  "description": "Presentation PHP - Read and Write Presentations documents in PHP",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Thiago Rizzo",
+      "email": "rizzo.17@outlook.com"
+    }
+  ],
+  "require": {
+    "php": "^7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "ThiagoRizzo\\PresentationPHP\\": "src/"
+    }
+  }
+}
