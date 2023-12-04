@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Reader;
 
 use Exception;
 use ThiagoRizzo\PresentationPHP\Models\DocProps\App;
+use ThiagoRizzo\PresentationPHP\Models\DocProps\Core;
 use ThiagoRizzo\PresentationPHP\PresentationPHP;
 use ZipArchive;
 
@@ -75,7 +76,7 @@ class PowerPoint2007
     private function loadDocumentProperties(): void
     {
         $this->presentation->app = App::load($this->zipArchive);
-//        $this->presentation->getCore()->load($this->zipArchive);
+        $this->presentation->core = Core::load($this->zipArchive);
 //        $this->presentation->getCustom()->load($this->zipArchive);
     }
 }
