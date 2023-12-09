@@ -75,8 +75,8 @@ class PowerPoint2007
 
     private function loadDocumentProperties(): void
     {
-        $this->presentation->core = Core::load($this->zipArchive);
         $this->presentation->setApp(App::load($this->zipArchive));
+        $this->presentation->setCore(Core::load($this->zipArchive));
 //        $this->presentation->getCustom()->load($this->zipArchive);
     }
 }
