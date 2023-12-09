@@ -11,9 +11,10 @@
   ],
   "require": {
     "php": "^7.4",
-    "ext-zip": "*",
-    "ext-json": "*",
     "ext-dom": "*",
+    "ext-json": "*",
+    "ext-simplexml": "*",
+    "ext-zip": "*",
     "phpoffice/common": "^1.0"
   },
   "require-dev": {
