@@ -3,22 +3,27 @@
 namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
-use ThiagoRizzo\PresentationPHP\Utils;
+use PhpOffice\Common\XMLReader;
 
 class Lpstr
 {
     public ?string $value = null;
 
-    public static function load(DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
     {
-        $dom = Utils::getElement($element, 'vt:lpstr');
-        if (!$dom) {
+        if ($element->tagName == 'vt:lpstr') {
+            $node = $element;
+        } else {
+            $node = $xmlReader->getElement('vt:lpstr', $element);
+        }
+
+        if (!$node) {
             return null;
         }
 
         $lpstr = new self();
 
-        $lpstr->value = $dom->nodeValue;
+        $lpstr->value = $node->nodeValue;
 
         return $lpstr;
     }

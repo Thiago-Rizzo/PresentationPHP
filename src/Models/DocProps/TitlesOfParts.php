@@ -3,22 +3,27 @@
 namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
-use ThiagoRizzo\PresentationPHP\Utils;
+use PhpOffice\Common\XMLReader;
 
 class TitlesOfParts
 {
     public ?Vector $vector = null;
 
-    public static function load(DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
     {
-        $dom = Utils::getElement($element, 'TitlesOfParts');
-        if (!$dom) {
+        if ($element->tagName == 'TitlesOfParts') {
+            $node = $element;
+        } else {
+            $node = $xmlReader->getElement('TitlesOfParts', $element);
+        }
+
+        if (!$node) {
             return null;
         }
 
         $titlesOfParts = new self();
 
-        $titlesOfParts->vector = Vector::load($dom);
+        $titlesOfParts->vector = Vector::load($xmlReader, $node);
 
         return $titlesOfParts;
     }

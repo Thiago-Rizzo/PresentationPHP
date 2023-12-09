@@ -3,7 +3,7 @@
 namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
-use ThiagoRizzo\PresentationPHP\Utils;
+use PhpOffice\Common\XMLReader;
 
 class Vector
 {
@@ -17,26 +17,31 @@ class Vector
     /** @var array<int, Variant>|null $variant */
     public ?array $variant = null;
 
-    public static function load(DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
     {
-        $dom = Utils::getElement($element, 'vt:vector');
-        if (!$dom) {
+        if ($element->tagName == 'vt:vector') {
+            $node = $element;
+        } else {
+            $node = $xmlReader->getElement('vt:vector', $element);
+        }
+
+        if (!$node) {
             return null;
         }
 
         $vector = new self();
 
-        $vector->size = $dom->getAttribute('size');
-        $vector->baseType = $dom->getAttribute('baseType');
+        $vector->size = $node->getAttribute('size');
+        $vector->baseType = $node->getAttribute('baseType');
 
-        $lpstrs = $dom->getElementsByTagName('vt:lpstr');
+        $lpstrs = $xmlReader->getElements('vt:lpstr', $node);
         for ($i = 0; $i < $lpstrs->length; $i++) {
-            $vector->lpstr[$i] = Lpstr::load($dom);
+            $vector->lpstr[$i] = Lpstr::load($xmlReader, $lpstrs->item($i));
         }
 
-        $variants = $dom->getElementsByTagName('vt:variant');
+        $variants = $xmlReader->getElements('vt:variant', $node);
         for ($i = 0; $i < $variants->length; $i++) {
-            $vector->variant[$i] = Variant::load($dom);
+            $vector->variant[$i] = Variant::load($xmlReader, $variants->item($i));
         }
 
         return $vector;

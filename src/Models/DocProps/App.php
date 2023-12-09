@@ -3,7 +3,6 @@
 namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
-use PhpOffice\Common\XMLReader;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
 
@@ -30,41 +29,39 @@ class App
     public ?HeadingPairs $headingPairs = null;
     public ?TitlesOfParts $titlesOfParts = null;
 
-    public static function load(ZipArchive $zipArchive): ?App
+    public static function load(ZipArchive $zipArchive): ?self
     {
         $docPropsApp = $zipArchive->getFromName('docProps/app.xml');
-        $xmlReader = new XMLReader();
+        $xmlReader = Utils::registerXMLReader($docPropsApp);
 
-        $dom = $xmlReader->getDomFromString($docPropsApp);
-
-        if (!$dom || !Utils::getElement($dom, 'Properties')) {
+        if (!$xmlReader->getElement('/Properties')) {
             return null;
         }
 
         $app = new self();
-        $properties = Utils::getElement($dom, 'Properties');
+        $properties = $xmlReader->getElement('/Properties');
 
         if ($properties instanceof DOMElement) {
             $app->xlmns = $properties->getAttribute('xmlns');
             $app->xlmnsVt = $properties->getAttribute('xmlns:vt');
 
-            $app->headingPairs = HeadingPairs::load($properties);
-            $app->titlesOfParts = TitlesOfParts::load($properties);
+            $app->headingPairs = HeadingPairs::load($xmlReader, $properties);
+            $app->titlesOfParts = TitlesOfParts::load($xmlReader, $properties);
 
-            $app->application = Utils::getElement($properties, 'Application')->nodeValue ?? '';
-            $app->appVersion = Utils::getElement($properties, 'AppVersion')->nodeValue ?? '';
-            $app->hiddenSlides = Utils::getElement($properties, 'HiddenSlides')->nodeValue ?? '';
-            $app->hyperlinksChanged = Utils::getElement($properties, 'HyperlinksChanged')->nodeValue ?? '';
-            $app->linksUpToDate = Utils::getElement($properties, 'LinksUpToDate')->nodeValue ?? '';
-            $app->mMClips = Utils::getElement($properties, 'MMClips')->nodeValue ?? '';
-            $app->notes = Utils::getElement($properties, 'Notes')->nodeValue ?? '';
-            $app->paragraphs = Utils::getElement($properties, 'Paragraphs')->nodeValue ?? '';
-            $app->presentationFormat = Utils::getElement($properties, 'PresentationFormat')->nodeValue ?? '';
-            $app->scaleCrop = Utils::getElement($properties, 'ScaleCrop')->nodeValue ?? '';
-            $app->slides = Utils::getElement($properties, 'Slides')->nodeValue ?? '';
-            $app->sharedDoc = Utils::getElement($properties, 'SharedDoc')->nodeValue ?? '';
-            $app->totalTime = Utils::getElement($properties, 'TotalTime')->nodeValue ?? '';
-            $app->words = Utils::getElement($properties, 'Words')->nodeValue ?? '';
+            $app->application = $xmlReader->getElement('Application')->nodeValue ?? '';
+            $app->appVersion = $xmlReader->getElement('AppVersion')->nodeValue ?? '';
+            $app->hiddenSlides = $xmlReader->getElement('HiddenSlides')->nodeValue ?? '';
+            $app->hyperlinksChanged = $xmlReader->getElement('HyperlinksChanged')->nodeValue ?? '';
+            $app->linksUpToDate = $xmlReader->getElement('LinksUpToDate')->nodeValue ?? '';
+            $app->mMClips = $xmlReader->getElement('MMClips')->nodeValue ?? '';
+            $app->notes = $xmlReader->getElement('Notes')->nodeValue ?? '';
+            $app->paragraphs = $xmlReader->getElement('Paragraphs')->nodeValue ?? '';
+            $app->presentationFormat = $xmlReader->getElement('PresentationFormat')->nodeValue ?? '';
+            $app->scaleCrop = $xmlReader->getElement('ScaleCrop')->nodeValue ?? '';
+            $app->slides = $xmlReader->getElement('Slides')->nodeValue ?? '';
+            $app->sharedDoc = $xmlReader->getElement('SharedDoc')->nodeValue ?? '';
+            $app->totalTime = $xmlReader->getElement('TotalTime')->nodeValue ?? '';
+            $app->words = $xmlReader->getElement('Words')->nodeValue ?? '';
         }
 
         return $app;

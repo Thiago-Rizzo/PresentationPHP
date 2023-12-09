@@ -3,22 +3,27 @@
 namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
-use ThiagoRizzo\PresentationPHP\Utils;
+use PhpOffice\Common\XMLReader;
 
 class I4
 {
     public ?string $value = null;
 
-    public static function load(DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
     {
-        $dom = Utils::getElement($element, 'vt:i4');
-        if (!$dom) {
+        if ($element->tagName == 'vt:i4') {
+            $node = $element;
+        } else {
+            $node = $xmlReader->getElement('vt:i4', $element);
+        }
+
+        if (!$node) {
             return null;
         }
 
         $i4 = new self();
 
-        $i4->value = $dom->nodeValue;
+        $i4->value = $node->nodeValue;
 
         return $i4;
     }
