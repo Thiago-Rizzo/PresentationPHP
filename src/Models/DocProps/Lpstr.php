@@ -7,7 +7,7 @@ use PhpOffice\Common\XMLReader;
 
 class Lpstr
 {
-    public ?string $value = null;
+    public string $value = '';
 
     public static function load(XMLReader $xmlReader, DOMElement $element): ?self
     {

@@ -7,14 +7,14 @@ use PhpOffice\Common\XMLReader;
 
 class Vector
 {
-    public ?string $baseType = null;
+    public string $baseType = '';
 
-    public ?string $size = null;
+    public string $size = '';
 
-    /** @var array<int, Lpstr>|null $lpstr */
+    /** @var Lpstr[]|null $lpstr */
     public ?array $lpstr = null;
 
-    /** @var array<int, Variant>|null $variant */
+    /** @var Variant[]|null $variant */
     public ?array $variant = null;
 
     public static function load(XMLReader $xmlReader, DOMElement $element): ?self

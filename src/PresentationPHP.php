@@ -6,19 +6,45 @@ namespace ThiagoRizzo\PresentationPHP;
 
 use ThiagoRizzo\PresentationPHP\Models\DocProps\App;
 use ThiagoRizzo\PresentationPHP\Models\DocProps\Core;
-use ThiagoRizzo\PresentationPHP\Models\Slide;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\Presentation;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\PresProps;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\Slide;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts\SlideLayout;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideMasters\SlideMaster;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\TableStyles;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\Themes\Theme;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\ViewProps;
+use ThiagoRizzo\PresentationPHP\Models\Rels\Relationships;
+use ThiagoRizzo\PresentationPHP\Reader\PowerPoint2007;
 
 class PresentationPHP
 {
-    /**
-     * All slides
-     * @var array<int, Slide> $slides
-     */
-    public array $slides;
+    /** @var Slide[] $slides */
+    protected array $slides;
 
-    public App $app;
+    /** @var SlideMaster[] $slideMasters */
+    protected array $slideMasters;
 
-    public Core $core;
+    /** @var SlideLayout[] $slideLayouts */
+    protected array $slideLayouts;
+
+    /** @var Theme[] $themes */
+    protected array $themes;
+
+    protected PresProps $presProps;
+
+    protected Presentation $presentation;
+
+    protected TableStyles $tableStyles;
+
+    protected ViewProps $viewProps;
+
+    protected App $app;
+
+    protected Core $core;
+
+    /** @var Relationships[] $rels */
+    protected array $rels = [];
 
     /**
      * Create a new PhpPresentation with one Slide.
@@ -32,7 +58,7 @@ class PresentationPHP
     }
 
     /**
-     * @return array<int, Slide>
+     * @return Slide[]
      */
     public function getSlides(): array
     {
@@ -40,7 +66,7 @@ class PresentationPHP
     }
 
     /**
-     * @param array<int, Slide> $slides
+     * @param Slide[] $slides
      */
     public function setSlides(array $slides): void
     {

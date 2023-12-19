@@ -7,8 +7,8 @@ use PhpOffice\Common\XMLReader;
 
 class Time
 {
-    public ?string $type = null;
-    public ?string $value = null;
+    public string $type = '';
+    public string $value = '';
 
     public static function load(XMLReader $xmlReader, DOMElement $element, string $tagName = ''): ?self
     {

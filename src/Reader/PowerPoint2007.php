@@ -10,11 +10,11 @@ use ZipArchive;
 
 class PowerPoint2007
 {
-    private PresentationPHP $presentation;
+    protected PresentationPHP $presentation;
 
-    private ZipArchive $zipArchive;
+    protected ZipArchive $zipArchive;
 
-    private string $fileName;
+    protected string $fileName;
 
     public function __construct(string $fileName = '')
     {
