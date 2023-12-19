@@ -68,12 +68,25 @@ class PowerPoint2007
 
         $this->zipArchive->open($this->fileName);
 
+        $this->loadRels();
+
+        // /docProps
         $this->loadDocumentProperties();
 
         return $this->presentation;
     }
 
     private function loadDocumentProperties(): void
+    protected function loadRels(): void
+    {
+        for ($index = 0; $index < $this->zipArchive->numFiles; $index++) {
+            $relPath = $this->zipArchive->statIndex($index)['name'];
+            if (Str::endsWith($relPath, '.rels')) {
+                $this->presentation->addRels($relPath, Relationships::loadFile($this->zipArchive, $relPath));
+            }
+        }
+    }
+
     {
         $this->presentation->setApp(App::load($this->zipArchive));
         $this->presentation->setCore(Core::load($this->zipArchive));
