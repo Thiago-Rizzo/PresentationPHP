@@ -3,6 +3,7 @@
 namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
+use PhpOffice\Common\XMLReader;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
 
@@ -18,36 +19,45 @@ class Core
     public string $creator = '';
     public string $lastModifiedBy = '';
     public string $revision = '';
+
     public ?Time $created = null;
     public ?Time $modified = null;
 
-    public static function load(ZipArchive $zipArchive): ?self
+    public static function loadFile(ZipArchive $zipArchive, ?string $fileName = null): ?self
     {
-        $docPropsCore = $zipArchive->getFromName('docProps/core.xml');
-        $xmlReader = Utils::registerXMLReader($docPropsCore);
+        $xml = $zipArchive->getFromName($fileName ?? 'docProps/core.xml');
+        $xmlReader = Utils::registerXMLReader($xml);
 
-        if (!$xmlReader->getElement('/cp:coreProperties')) {
+        return self::load($xmlReader, $xmlReader->getElement('/cp:coreProperties'));
+    }
+
+    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
+    {
+        if ($element->tagName == 'cp:coreProperties') {
+            $node = $element;
+        } else {
+            $node = $xmlReader->getElement('cp:coreProperties', $element);
+        }
+
+        if (!$node) {
             return null;
         }
 
         $core = new self();
-        $properties = $xmlReader->getElement('/cp:coreProperties');
 
-        if ($properties instanceof DOMElement) {
-            $core->xlmnsXsi = $properties->getAttribute('xmlns:xsi');
-            $core->xlmnsCp = $properties->getAttribute('xmlns:cp');
-            $core->xlmnsDc = $properties->getAttribute('xmlns:dc');
-            $core->xlmnsDcTerms = $properties->getAttribute('xmlns:dcterms');
-            $core->xlmnsDcmiType = $properties->getAttribute('xmlns:dcmitype');
+        $core->xlmnsXsi = $node->getAttribute('xmlns:xsi');
+        $core->xlmnsCp = $node->getAttribute('xmlns:cp');
+        $core->xlmnsDc = $node->getAttribute('xmlns:dc');
+        $core->xlmnsDcTerms = $node->getAttribute('xmlns:dcterms');
+        $core->xlmnsDcmiType = $node->getAttribute('xmlns:dcmitype');
 
-            $core->title = $xmlReader->getElement('dc:title')->nodeValue ?? '';
-            $core->creator = $xmlReader->getElement('dc:creator')->nodeValue ?? '';
-            $core->lastModifiedBy = $xmlReader->getElement('cp:lastModifiedBy')->nodeValue ?? '';
-            $core->revision = $xmlReader->getElement('cp:revision')->nodeValue ?? '';
+        $core->title = $xmlReader->getElement('dc:title', $node)->nodeValue ?? '';
+        $core->creator = $xmlReader->getElement('dc:creator', $node)->nodeValue ?? '';
+        $core->lastModifiedBy = $xmlReader->getElement('cp:lastModifiedBy', $node)->nodeValue ?? '';
+        $core->revision = $xmlReader->getElement('cp:revision', $node)->nodeValue ?? '';
 
-            $core->created = Time::load($xmlReader, $properties, 'dcterms:created');
-            $core->modified = Time::load($xmlReader, $properties, 'dcterms:modified');
-        }
+        $core->created = Time::load($xmlReader, $node, 'dcterms:created');
+        $core->modified = Time::load($xmlReader, $node, 'dcterms:modified');
 
         return $core;
     }
