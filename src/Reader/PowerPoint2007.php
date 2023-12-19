@@ -76,7 +76,6 @@ class PowerPoint2007
         return $this->presentation;
     }
 
-    private function loadDocumentProperties(): void
     protected function loadRels(): void
     {
         for ($index = 0; $index < $this->zipArchive->numFiles; $index++) {
@@ -87,9 +86,10 @@ class PowerPoint2007
         }
     }
 
+    protected function loadDocumentProperties(): void
     {
-        $this->presentation->setApp(App::load($this->zipArchive));
-        $this->presentation->setCore(Core::load($this->zipArchive));
+        $this->presentation->setApp(App::loadFile($this->zipArchive));
+        $this->presentation->setCore(Core::loadFile($this->zipArchive));
 //        $this->presentation->getCustom()->load($this->zipArchive);
     }
 }
