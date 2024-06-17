@@ -4,14 +4,15 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use ThiagoRizzo\PresentationPHP\Models\Model;
 
-class TitlesOfParts
+class TitlesOfParts extends Model
 {
     public ?Vector $vector = null;
 
-    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName == 'TitlesOfParts') {
+        if ($element->tagName === 'TitlesOfParts') {
             $node = $element;
         } else {
             $node = $xmlReader->getElement('TitlesOfParts', $element);
@@ -21,10 +22,10 @@ class TitlesOfParts
             return null;
         }
 
-        $titlesOfParts = new self();
+        $instance = new self();
 
-        $titlesOfParts->vector = Vector::load($xmlReader, $node);
+        $instance->vector = Vector::load($xmlReader, $node);
 
-        return $titlesOfParts;
+        return $instance;
     }
 }

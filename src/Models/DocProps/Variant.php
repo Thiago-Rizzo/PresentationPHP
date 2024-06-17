@@ -4,14 +4,15 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use ThiagoRizzo\PresentationPHP\Models\Model;
 
-class Variant
+class Variant extends Model
 {
     public ?Lpstr $lpstr = null;
 
     public ?I4 $i4 = null;
 
-    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
         if ($element->tagName == 'vt:variant') {
             $node = $element;
@@ -23,11 +24,11 @@ class Variant
             return null;
         }
 
-        $variant = new self();
+        $instance = new self();
 
-        $variant->lpstr = Lpstr::load($xmlReader, $node);
-        $variant->i4 = I4::load($xmlReader, $node);
+        $instance->lpstr = Lpstr::load($xmlReader, $node);
+        $instance->i4 = I4::load($xmlReader, $node);
 
-        return $variant;
+        return $instance;
     }
 }

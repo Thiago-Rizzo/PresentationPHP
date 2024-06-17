@@ -1,22 +1,23 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
+namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
-class Time extends Model
+class Ph extends Model
 {
     public string $type = '';
-    public string $value = '';
+    public string $sz = '';
+    public string $idx = '';
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName === $tag) {
+        if ($element->nodeName == 'p:ph') {
             $node = $element;
         } else {
-            $node = $xmlReader->getElement($tag, $element);
+            $node = $xmlReader->getElement('p:ph', $element);
         }
 
         if (!$node) {
@@ -25,9 +26,9 @@ class Time extends Model
 
         $instance = new self();
 
-        $instance->type = $node->getAttribute('xsi:type');
-
-        $instance->value = $node->nodeValue;
+        $instance->type = $node->getAttribute('type');
+        $instance->sz = $node->getAttribute('sz');
+        $instance->idx = $node->getAttribute('idx');
 
         return $instance;
     }

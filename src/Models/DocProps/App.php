@@ -4,10 +4,11 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use ThiagoRizzo\PresentationPHP\Models\Model;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
 
-class App
+class App extends Model
 {
     public string $xlmns = '';
     public string $xlmnsVt = '';
@@ -38,7 +39,7 @@ class App
         return self::load($xmlReader, $xmlReader->getElement('/Properties'));
     }
 
-    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
         if ($element->tagName == 'Properties') {
             $node = $element;
@@ -50,29 +51,29 @@ class App
             return null;
         }
 
-        $app = new self();
+        $instance = new self();
 
-        $app->xlmns = $node->getAttribute('xmlns');
-        $app->xlmnsVt = $node->getAttribute('xmlns:vt');
+        $instance->xlmns = $node->getAttribute('xmlns');
+        $instance->xlmnsVt = $node->getAttribute('xmlns:vt');
 
-        $app->headingPairs = HeadingPairs::load($xmlReader, $node);
-        $app->titlesOfParts = TitlesOfParts::load($xmlReader, $node);
+        $instance->headingPairs = HeadingPairs::load($xmlReader, $node);
+        $instance->titlesOfParts = TitlesOfParts::load($xmlReader, $node);
 
-        $app->application = $xmlReader->getElement('Application', $node)->nodeValue ?? '';
-        $app->appVersion = $xmlReader->getElement('AppVersion', $node)->nodeValue ?? '';
-        $app->hiddenSlides = $xmlReader->getElement('HiddenSlides', $node)->nodeValue ?? '';
-        $app->hyperlinksChanged = $xmlReader->getElement('HyperlinksChanged', $node)->nodeValue ?? '';
-        $app->linksUpToDate = $xmlReader->getElement('LinksUpToDate', $node)->nodeValue ?? '';
-        $app->mMClips = $xmlReader->getElement('MMClips', $node)->nodeValue ?? '';
-        $app->notes = $xmlReader->getElement('Notes', $node)->nodeValue ?? '';
-        $app->paragraphs = $xmlReader->getElement('Paragraphs', $node)->nodeValue ?? '';
-        $app->presentationFormat = $xmlReader->getElement('PresentationFormat', $node)->nodeValue ?? '';
-        $app->scaleCrop = $xmlReader->getElement('ScaleCrop', $node)->nodeValue ?? '';
-        $app->slides = $xmlReader->getElement('Slides', $node)->nodeValue ?? '';
-        $app->sharedDoc = $xmlReader->getElement('SharedDoc', $node)->nodeValue ?? '';
-        $app->totalTime = $xmlReader->getElement('TotalTime', $node)->nodeValue ?? '';
-        $app->words = $xmlReader->getElement('Words', $node)->nodeValue ?? '';
+        $instance->application = $xmlReader->getElement('Application', $node)->nodeValue ?? '';
+        $instance->appVersion = $xmlReader->getElement('AppVersion', $node)->nodeValue ?? '';
+        $instance->hiddenSlides = $xmlReader->getElement('HiddenSlides', $node)->nodeValue ?? '';
+        $instance->hyperlinksChanged = $xmlReader->getElement('HyperlinksChanged', $node)->nodeValue ?? '';
+        $instance->linksUpToDate = $xmlReader->getElement('LinksUpToDate', $node)->nodeValue ?? '';
+        $instance->mMClips = $xmlReader->getElement('MMClips', $node)->nodeValue ?? '';
+        $instance->notes = $xmlReader->getElement('Notes', $node)->nodeValue ?? '';
+        $instance->paragraphs = $xmlReader->getElement('Paragraphs', $node)->nodeValue ?? '';
+        $instance->presentationFormat = $xmlReader->getElement('PresentationFormat', $node)->nodeValue ?? '';
+        $instance->scaleCrop = $xmlReader->getElement('ScaleCrop', $node)->nodeValue ?? '';
+        $instance->slides = $xmlReader->getElement('Slides', $node)->nodeValue ?? '';
+        $instance->sharedDoc = $xmlReader->getElement('SharedDoc', $node)->nodeValue ?? '';
+        $instance->totalTime = $xmlReader->getElement('TotalTime', $node)->nodeValue ?? '';
+        $instance->words = $xmlReader->getElement('Words', $node)->nodeValue ?? '';
 
-        return $app;
+        return $instance;
     }
 }

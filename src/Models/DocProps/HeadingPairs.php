@@ -5,14 +5,15 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use ThiagoRizzo\PresentationPHP\Models\Model;
 
-class HeadingPairs
+class HeadingPairs extends Model
 {
     public ?Vector $vector = null;
 
-    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName == 'HeadingPairs') {
+        if ($element->tagName === 'HeadingPairs') {
             $node = $element;
         } else {
             $node = $xmlReader->getElement('HeadingPairs', $element);
@@ -22,10 +23,10 @@ class HeadingPairs
             return null;
         }
 
-        $headingPairs = new HeadingPairs();
+        $instance = new self();
 
-        $headingPairs->vector = Vector::load($xmlReader, $node);
+        $instance->vector = Vector::load($xmlReader, $node);
 
-        return $headingPairs;
+        return $instance;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ThiagoRizzo\PresentationPHP;
 
+use Exception;
 use ThiagoRizzo\PresentationPHP\Models\DocProps\App;
 use ThiagoRizzo\PresentationPHP\Models\DocProps\Core;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\Presentation;
@@ -51,11 +52,46 @@ class PresentationPHP
      */
     public function __construct()
     {
-        $this->slides = [new Slide()];
-
         $this->app = new App();
         $this->core = new Core();
+
+        $this->slides = [new Slide()];
+        $this->slideMasters = [];
+        $this->slideLayouts = [];
+        $this->themes = [];
+        $this->presProps = new PresProps();
+        $this->presentation = new Presentation();
+        $this->tableStyles = new TableStyles();
+        $this->viewProps = new ViewProps();
     }
+
+    /**
+     * @throws Exception
+     */
+    public function load(string $fileName): self
+    {
+        $powerPoint2007 = new PowerPoint2007($fileName);
+        $powerPoint2007->setPresentation($this);
+
+        if (!$powerPoint2007->isPresentation()) {
+            throw new Exception($fileName);
+        }
+
+        return $powerPoint2007->read();
+    }
+
+//    public function write(){
+//        $this->getApp()->write();
+//        $this->getCore()->write();
+//        $this->getPresentation()->write();
+//        $this->getPresProps()->write();
+//        $this->getSlides()->write();
+//        $this->getSlideMasters()->write();
+//        $this->getSlideLayouts()->write();
+//        $this->getThemes()->write();
+//        $this->getTableStyles()->write();
+//        $this->getViewProps()->write();
+//    }
 
     /**
      * @return Slide[]
@@ -73,29 +109,132 @@ class PresentationPHP
         $this->slides = $slides;
     }
 
-    public function addSlide(Slide $slide): void
+    /**
+     * @param Slide|null $slide
+     * @return PresentationPHP
+     */
+    public function addSlide(?Slide $slide = null): self
     {
+        if ($slide === null) {
+            $slide = new Slide();
+        }
+
         $this->slides[] = $slide;
+
+        return $this;
     }
 
-    public function removeSlide(int $index): void
+    public function getSlideMasters(): array
     {
-        unset($this->slides[$index]);
+        return $this->slideMasters;
     }
 
-    public function getSlide(int $index): Slide
+    public function setSlideMasters(array $slideMasters): void
     {
-        return $this->slides[$index];
+        $this->slideMasters = $slideMasters;
     }
 
-    public function setSlide(int $index, Slide $slide): void
+    /**
+     * @param SlideMaster|null $slideMaster
+     * @return PresentationPHP
+     */
+    public function addSlideMaster(?SlideMaster $slideMaster = null): self
     {
-        $this->slides[$index] = $slide;
+        if ($slideMaster === null) {
+            $slideMaster = new SlideMaster();
+        }
+
+        $this->slideMasters[] = $slideMaster;
+
+        return $this;
     }
 
-    public function getSlideCount(): int
+    public function getSlideLayouts(): array
     {
-        return count($this->slides);
+        return $this->slideLayouts;
+    }
+
+    public function setSlideLayouts(array $slideLayouts): void
+    {
+        $this->slideLayouts = $slideLayouts;
+    }
+
+    /**
+     * @param SlideLayout|null $slideLayout
+     * @return PresentationPHP
+     */
+    public function addSlideLayout(?SlideLayout $slideLayout = null): self
+    {
+        if ($slideLayout) {
+            $this->slideLayouts[] = $slideLayout;
+        }
+
+        return $this;
+    }
+
+    public function getThemes(): array
+    {
+        return $this->themes;
+    }
+
+    public function setThemes(array $themes): void
+    {
+        $this->themes = $themes;
+    }
+
+    /**
+     * @param Theme|null $theme
+     * @return PresentationPHP
+     */
+    public function addTheme(?Theme $theme = null): self
+    {
+        if ($theme === null) {
+            $theme = new Theme();
+        }
+
+        $this->themes[] = $theme;
+
+        return $this;
+    }
+
+    public function getPresProps(): PresProps
+    {
+        return $this->presProps;
+    }
+
+    public function setPresProps(PresProps $presProps): void
+    {
+        $this->presProps = $presProps;
+    }
+
+    public function getPresentation(): Presentation
+    {
+        return $this->presentation;
+    }
+
+    public function setPresentation(Presentation $presentation): void
+    {
+        $this->presentation = $presentation;
+    }
+
+    public function getTableStyles(): TableStyles
+    {
+        return $this->tableStyles;
+    }
+
+    public function setTableStyles(TableStyles $tableStyles): void
+    {
+        $this->tableStyles = $tableStyles;
+    }
+
+    public function getViewProps(): ViewProps
+    {
+        return $this->viewProps;
+    }
+
+    public function setViewProps(ViewProps $viewProps): void
+    {
+        $this->viewProps = $viewProps;
     }
 
     public function getApp(): App
@@ -116,5 +255,26 @@ class PresentationPHP
     public function setCore(Core $core): void
     {
         $this->core = $core;
+    }
+
+    public function getRels(): array
+    {
+        return $this->rels;
+    }
+
+    public function setRels(?array $rels = null): self
+    {
+        $this->rels = $rels ?? [];
+
+        return $this;
+    }
+
+    public function addRels(string $relPath, ?Relationships $rels = null): self
+    {
+        if ($rels) {
+            $this->rels[$relPath] = $rels;
+        }
+
+        return $this;
     }
 }

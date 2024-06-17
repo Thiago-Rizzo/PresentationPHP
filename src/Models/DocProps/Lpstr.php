@@ -4,14 +4,15 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use ThiagoRizzo\PresentationPHP\Models\Model;
 
-class Lpstr
+class Lpstr extends Model
 {
     public string $value = '';
 
-    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName == 'vt:lpstr') {
+        if ($element->tagName === 'vt:lpstr') {
             $node = $element;
         } else {
             $node = $xmlReader->getElement('vt:lpstr', $element);
@@ -21,10 +22,10 @@ class Lpstr
             return null;
         }
 
-        $lpstr = new self();
+        $instance = new self();
 
-        $lpstr->value = $node->nodeValue;
+        $instance->value = $node->nodeValue;
 
-        return $lpstr;
+        return $instance;
     }
 }

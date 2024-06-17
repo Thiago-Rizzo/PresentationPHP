@@ -1,31 +1,25 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
+namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
-class I4 extends Model
+class MasterClrMapping extends Model
 {
-    public string $value = '';
-
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName === 'vt:i4') {
+        if ($element->nodeName === 'a:masterClrMapping') {
             $node = $element;
         } else {
-            $node = $xmlReader->getElement('vt:i4', $element);
+            $node = $xmlReader->getElement('a:masterClrMapping', $element);
         }
 
         if (!$node) {
             return null;
         }
 
-        $instance = new self();
-
-        $instance->value = $node->nodeValue;
-
-        return $instance;
+        return new self();
     }
 }

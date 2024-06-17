@@ -15,7 +15,8 @@
     "ext-json": "*",
     "ext-simplexml": "*",
     "ext-zip": "*",
-    "phpoffice/common": "^1.0"
+    "phpoffice/common": "^1.0",
+    "illuminate/support": "^8.83"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.6"

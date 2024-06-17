@@ -4,10 +4,11 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use ThiagoRizzo\PresentationPHP\Models\Model;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
 
-class Core
+class Core  extends Model
 {
     public string $xlmnsXsi = '';
     public string $xlmnsCp = '';
@@ -31,7 +32,7 @@ class Core
         return self::load($xmlReader, $xmlReader->getElement('/cp:coreProperties'));
     }
 
-    public static function load(XMLReader $xmlReader, DOMElement $element): ?self
+    public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
         if ($element->tagName == 'cp:coreProperties') {
             $node = $element;
@@ -43,22 +44,22 @@ class Core
             return null;
         }
 
-        $core = new self();
+        $instance = new self();
 
-        $core->xlmnsXsi = $node->getAttribute('xmlns:xsi');
-        $core->xlmnsCp = $node->getAttribute('xmlns:cp');
-        $core->xlmnsDc = $node->getAttribute('xmlns:dc');
-        $core->xlmnsDcTerms = $node->getAttribute('xmlns:dcterms');
-        $core->xlmnsDcmiType = $node->getAttribute('xmlns:dcmitype');
+        $instance->xlmnsXsi = $node->getAttribute('xmlns:xsi');
+        $instance->xlmnsCp = $node->getAttribute('xmlns:cp');
+        $instance->xlmnsDc = $node->getAttribute('xmlns:dc');
+        $instance->xlmnsDcTerms = $node->getAttribute('xmlns:dcterms');
+        $instance->xlmnsDcmiType = $node->getAttribute('xmlns:dcmitype');
 
-        $core->title = $xmlReader->getElement('dc:title', $node)->nodeValue ?? '';
-        $core->creator = $xmlReader->getElement('dc:creator', $node)->nodeValue ?? '';
-        $core->lastModifiedBy = $xmlReader->getElement('cp:lastModifiedBy', $node)->nodeValue ?? '';
-        $core->revision = $xmlReader->getElement('cp:revision', $node)->nodeValue ?? '';
+        $instance->title = $xmlReader->getElement('dc:title', $node)->nodeValue ?? '';
+        $instance->creator = $xmlReader->getElement('dc:creator', $node)->nodeValue ?? '';
+        $instance->lastModifiedBy = $xmlReader->getElement('cp:lastModifiedBy', $node)->nodeValue ?? '';
+        $instance->revision = $xmlReader->getElement('cp:revision', $node)->nodeValue ?? '';
 
-        $core->created = Time::load($xmlReader, $node, 'dcterms:created');
-        $core->modified = Time::load($xmlReader, $node, 'dcterms:modified');
+        $instance->created = Time::load($xmlReader, $node, 'dcterms:created');
+        $instance->modified = Time::load($xmlReader, $node, 'dcterms:modified');
 
-        return $core;
+        return $instance;
     }
 }

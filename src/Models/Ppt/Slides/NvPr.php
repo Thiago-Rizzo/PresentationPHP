@@ -1,21 +1,21 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
+namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
-class I4 extends Model
+class NvPr extends Model
 {
-    public string $value = '';
+    public ?Ph $ph = null;
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName === 'vt:i4') {
+        if ($element->nodeName == 'p:nvPr') {
             $node = $element;
         } else {
-            $node = $xmlReader->getElement('vt:i4', $element);
+            $node = $xmlReader->getElement('p:nvPr', $element);
         }
 
         if (!$node) {
@@ -24,7 +24,7 @@ class I4 extends Model
 
         $instance = new self();
 
-        $instance->value = $node->nodeValue;
+        $instance->ph = Ph::load($xmlReader, $node);
 
         return $instance;
     }

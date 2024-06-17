@@ -3,8 +3,11 @@
 namespace ThiagoRizzo\PresentationPHP\Reader;
 
 use Exception;
+use Illuminate\Support\Str;
 use ThiagoRizzo\PresentationPHP\Models\DocProps\App;
 use ThiagoRizzo\PresentationPHP\Models\DocProps\Core;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts\SlideLayout;
+use ThiagoRizzo\PresentationPHP\Models\Rels\Relationships;
 use ThiagoRizzo\PresentationPHP\PresentationPHP;
 use ZipArchive;
 
@@ -20,6 +23,14 @@ class PowerPoint2007
     {
         $this->fileName = $fileName;
         $this->presentation = new PresentationPHP();
+    }
+
+    /**
+     * @param PresentationPHP $presentation
+     */
+    public function setPresentation(PresentationPHP $presentation): void
+    {
+        $this->presentation = $presentation;
     }
 
     /**
@@ -73,6 +84,19 @@ class PowerPoint2007
         // /docProps
         $this->loadDocumentProperties();
 
+        // /ppt
+        $this->loadSlideLayouts();
+//        $this->loadSlideMasters();
+//        $this->loadSlides();
+//        $this->loadTheme();
+//        $this->loadPresentation();
+//        $this->loadPresProps();
+//        $this->loaTableStyles();
+//        $this->loadViewProps();
+//
+//        // /
+//        $this->loadContentTypes();
+
         return $this->presentation;
     }
 
@@ -91,5 +115,16 @@ class PowerPoint2007
         $this->presentation->setApp(App::loadFile($this->zipArchive));
         $this->presentation->setCore(Core::loadFile($this->zipArchive));
 //        $this->presentation->getCustom()->load($this->zipArchive);
+    }
+
+    protected function loadSlideLayouts(): void
+    {
+        for ($index = 0; $index < $this->zipArchive->numFiles; $index++) {
+            $namePath = $this->zipArchive->statIndex($index)['name'];
+
+            if (Str::contains($namePath, 'slideLayouts/slideLayout')) {
+                $this->presentation->addSlideLayout(SlideLayout::loadFile($this->zipArchive, $namePath));
+            }
+        }
     }
 }
