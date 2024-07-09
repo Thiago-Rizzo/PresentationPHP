@@ -10,6 +10,7 @@ use ZipArchive;
 
 class SlideLayout extends Model
 {
+    public string $tag = 'p:sldLayout';
     public string $type = 'title';
     public string $preserve = '1';
 
@@ -26,17 +27,12 @@ class SlideLayout extends Model
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName === 'p:sldLayout') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('p:sldLayout', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->type = $node->getAttribute('type');
         $instance->preserve = $node->getAttribute('preserve');

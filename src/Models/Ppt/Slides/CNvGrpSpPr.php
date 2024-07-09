@@ -8,19 +8,6 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class CNvGrpSpPr extends Model
 {
+    public string $tag = 'p:cNvGrpSpPr';
 
-    public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
-    {
-        if ($element->nodeName == 'p:cNvGrpSpPr') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('p:cNvGrpSpPr', $element);
-        }
-
-        if (!$node) {
-            return null;
-        }
-
-        return new self();
-    }
 }

@@ -8,21 +8,18 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class NvPr extends Model
 {
+    public string $tag = 'p:nvPr';
+
     public ?Ph $ph = null;
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName == 'p:nvPr') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('p:nvPr', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->ph = Ph::load($xmlReader, $node);
 

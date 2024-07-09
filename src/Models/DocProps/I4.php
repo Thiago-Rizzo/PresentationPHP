@@ -8,21 +8,18 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class I4 extends Model
 {
+    public string $tag = 'vt:i4';
+
     public string $value = '';
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName === 'vt:i4') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('vt:i4', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->value = $node->nodeValue;
 

@@ -8,6 +8,8 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class SpTree extends Model
 {
+    public string $tag = 'p:spTree';
+
     /** @var Sp[]|null $sps */
     public ?array $sps = null;
 
@@ -17,17 +19,12 @@ class SpTree extends Model
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName == 'p:spTree') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('p:spTree', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $sps = $xmlReader->getElements('p:sp', $node);
         for ($i = 0; $i < $sps->length; $i++) {

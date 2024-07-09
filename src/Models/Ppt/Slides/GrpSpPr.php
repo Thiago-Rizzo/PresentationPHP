@@ -8,21 +8,18 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class GrpSpPr extends Model
 {
+    public string $tag = 'p:grpSpPr';
+
     public ?Xfrm $xfrm = null;
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName == 'p:grpSpPr') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('p:grpSpPr', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->xfrm = Xfrm::load($xmlReader, $node);
 

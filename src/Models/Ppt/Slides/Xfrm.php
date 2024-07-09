@@ -8,6 +8,8 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Xfrm extends Model
 {
+    public string $tag = 'a:xfrm';
+
     public ?Off $off = null;
     public ?Ext $ext = null;
     public ?ChOff $chOff = null;
@@ -15,17 +17,12 @@ class Xfrm extends Model
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName == 'a:xfrm') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('a:xfrm', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->off = Off::load($xmlReader, $node);
         $instance->ext = Ext::load($xmlReader, $node);

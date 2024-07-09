@@ -8,23 +8,20 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Variant extends Model
 {
+    public string $tag = 'vt:variant';
+
     public ?Lpstr $lpstr = null;
 
     public ?I4 $i4 = null;
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName == 'vt:variant') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('vt:variant', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->lpstr = Lpstr::load($xmlReader, $node);
         $instance->i4 = I4::load($xmlReader, $node);

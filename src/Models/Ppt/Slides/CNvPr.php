@@ -8,22 +8,19 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class CNvPr extends Model
 {
+    public string $tag = 'p:cNvPr';
+
     public string $id = '';
     public string $name = '';
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName == 'p:cNvPr') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('p:cNvPr', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->id = $node->getAttribute('id');
         $instance->name = $node->getAttribute('name');

@@ -8,22 +8,19 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class ChOff extends Model
 {
+    public string $tag = 'a:chOff';
+
     public string $x = '';
     public string $y = '';
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName == 'a:chOff') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('a:chOff', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->x = $node->getAttribute('x');
         $instance->y = $node->getAttribute('y');

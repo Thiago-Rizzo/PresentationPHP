@@ -8,6 +8,8 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Vector extends Model
 {
+    public string $tag = 'vt:vector';
+
     public string $baseType = '';
 
     public string $size = '';
@@ -20,17 +22,12 @@ class Vector extends Model
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName === 'vt:vector') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('vt:vector', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->size = $node->getAttribute('size');
         $instance->baseType = $node->getAttribute('baseType');

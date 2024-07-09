@@ -8,21 +8,18 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class TitlesOfParts extends Model
 {
+    public string $tag = 'TitlesOfParts';
+
     public ?Vector $vector = null;
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName === 'TitlesOfParts') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('TitlesOfParts', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->vector = Vector::load($xmlReader, $node);
 

@@ -6,5 +6,5 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class BuNone extends Model
 {
-
+    public string $tag = 'a:buNone';
 }

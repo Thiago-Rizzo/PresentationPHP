@@ -10,6 +10,8 @@ use ZipArchive;
 
 class App extends Model
 {
+    public string $tag = 'Properties';
+
     public string $xlmns = '';
     public string $xlmnsVt = '';
 
@@ -41,17 +43,12 @@ class App extends Model
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName == 'Properties') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('Properties', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->xlmns = $node->getAttribute('xmlns');
         $instance->xlmnsVt = $node->getAttribute('xmlns:vt');

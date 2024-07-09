@@ -9,21 +9,18 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class HeadingPairs extends Model
 {
+    public string $tag = 'HeadingPairs';
+
     public ?Vector $vector = null;
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName === 'HeadingPairs') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('HeadingPairs', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->vector = Vector::load($xmlReader, $node);
 

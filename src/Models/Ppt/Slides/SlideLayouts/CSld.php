@@ -9,23 +9,20 @@ use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SpTree;
 
 class CSld extends Model
 {
+    public string $tag = 'p:cSld';
+
     public string $name = '';
 
     public ?SpTree $spTree = null;
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName === 'p:cSld') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('p:cSld', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $instance->name = $node->getAttribute('name');
 

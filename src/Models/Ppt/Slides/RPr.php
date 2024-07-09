@@ -8,12 +8,13 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class RPr extends Model
 {
+    public string $tag = 'a:rPr';
     public string $lang = '';
     public string $smtClean = '';
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        $instance = new self($tag ?? 'a:rPr');
+        $instance = new static($tag);
 
         $node = $instance->getElement($xmlReader, $element);
         if (!$node) {

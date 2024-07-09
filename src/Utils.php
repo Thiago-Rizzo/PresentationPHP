@@ -8,7 +8,7 @@ use SimpleXMLElement;
 
 class Utils
 {
-    public static function registerXMLReader(string $xml): ?XMLReader
+    public static function registerXMLReader(string $xml): XMLReader
     {
         $xmlReader = new XMLReader();
         $xmlReader->getDomFromString($xml);
