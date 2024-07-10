@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Lpstr extends Model
@@ -24,5 +25,10 @@ class Lpstr extends Model
         $instance->value = $node->nodeValue;
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->writeElement($this->tag, $this->value);
     }
 }

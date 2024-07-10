@@ -4,17 +4,21 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
 
-class Core  extends Model
+class Core extends Model
 {
-    public string $xlmnsXsi = '';
-    public string $xlmnsCp = '';
-    public string $xlmnsDc = '';
-    public string $xlmnsDcTerms = '';
-    public string $xlmnsDcmiType = '';
+    public string $tag = 'cp:coreProperties';
+    public static string $filename = 'docProps/core.xml';
+
+    public string $xmlnsXsi = '';
+    public string $xmlnsCp = '';
+    public string $xmlnsDc = '';
+    public string $xmlnsDcTerms = '';
+    public string $xmlnsDcmiType = '';
 
     public string $title = '';
     public string $creator = '';
@@ -26,7 +30,7 @@ class Core  extends Model
 
     public static function loadFile(ZipArchive $zipArchive, ?string $fileName = null): ?self
     {
-        $xml = $zipArchive->getFromName($fileName ?? 'docProps/core.xml');
+        $xml = $zipArchive->getFromName($fileName ?? self::$filename);
         $xmlReader = Utils::registerXMLReader($xml);
 
         return self::load($xmlReader, $xmlReader->getElement('/cp:coreProperties'));
@@ -34,23 +38,18 @@ class Core  extends Model
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName == 'cp:coreProperties') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('cp:coreProperties', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
 
-        $instance = new self();
-
-        $instance->xlmnsXsi = $node->getAttribute('xmlns:xsi');
-        $instance->xlmnsCp = $node->getAttribute('xmlns:cp');
-        $instance->xlmnsDc = $node->getAttribute('xmlns:dc');
-        $instance->xlmnsDcTerms = $node->getAttribute('xmlns:dcterms');
-        $instance->xlmnsDcmiType = $node->getAttribute('xmlns:dcmitype');
+        $instance->xmlnsXsi = $node->getAttribute('xmlns:xsi');
+        $instance->xmlnsCp = $node->getAttribute('xmlns:cp');
+        $instance->xmlnsDc = $node->getAttribute('xmlns:dc');
+        $instance->xmlnsDcTerms = $node->getAttribute('xmlns:dcterms');
+        $instance->xmlnsDcmiType = $node->getAttribute('xmlns:dcmitype');
 
         $instance->title = $xmlReader->getElement('dc:title', $node)->nodeValue ?? '';
         $instance->creator = $xmlReader->getElement('dc:creator', $node)->nodeValue ?? '';
@@ -61,5 +60,38 @@ class Core  extends Model
         $instance->modified = Time::load($xmlReader, $node, 'dcterms:modified');
 
         return $instance;
+    }
+
+
+    public function writeFile(ZipArchive $zipArchive): void
+    {
+        $xmlWriter = new XMLWriter(XMLWriter::STORAGE_MEMORY);
+
+        $xmlWriter->startDocument('1.0', 'UTF-8', 'yes');
+
+        $this->write($xmlWriter);
+
+        $zipArchive->addFromString(self::$filename, $xmlWriter->getData());
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->xmlnsXsi !== '' && $xmlWriter->writeAttribute('xmlns:xsi', $this->xmlnsXsi);
+        $this->xmlnsCp !== '' && $xmlWriter->writeAttribute('xmlns:cp', $this->xmlnsCp);
+        $this->xmlnsDc !== '' && $xmlWriter->writeAttribute('xmlns:dc', $this->xmlnsDc);
+        $this->xmlnsDcTerms !== '' && $xmlWriter->writeAttribute('xmlns:dcterms', $this->xmlnsDcTerms);
+        $this->xmlnsDcmiType !== '' && $xmlWriter->writeAttribute('xmlns:dcmitype', $this->xmlnsDcmiType);
+
+        $this->title !== '' && $xmlWriter->writeElement('dc:title', $this->title);
+        $this->creator !== '' && $xmlWriter->writeElement('dc:creator', $this->creator);
+        $this->lastModifiedBy !== '' && $xmlWriter->writeElement('cp:lastModifiedBy', $this->lastModifiedBy);
+        $this->revision !== '' && $xmlWriter->writeElement('cp:revision', $this->revision);
+
+        $this->created && $this->created->write($xmlWriter);
+        $this->modified && $this->modified->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

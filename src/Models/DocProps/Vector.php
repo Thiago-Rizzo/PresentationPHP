@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Vector extends Model
@@ -14,11 +15,11 @@ class Vector extends Model
 
     public string $size = '';
 
-    /** @var Lpstr[]|null $lpstr */
-    public ?array $lpstr = null;
+    /** @var Lpstr[] $lpstr */
+    public array $lpstr = [];
 
-    /** @var Variant[]|null $variant */
-    public ?array $variant = null;
+    /** @var Variant[] $variant */
+    public array $variant = [];
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
@@ -43,5 +44,23 @@ class Vector extends Model
         }
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->size !== '' && $xmlWriter->writeAttribute('size', $this->size);
+        $this->baseType !== '' && $xmlWriter->writeAttribute('baseType', $this->baseType);
+
+        foreach ($this->lpstr as $lpstr) {
+            $lpstr && $lpstr->write($xmlWriter);
+        }
+
+        foreach ($this->variant as $variant) {
+            $variant && $variant->write($xmlWriter);
+        }
+
+        $xmlWriter->endElement();
     }
 }

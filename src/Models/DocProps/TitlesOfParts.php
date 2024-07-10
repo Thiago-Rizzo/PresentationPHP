@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class TitlesOfParts extends Model
@@ -24,5 +25,14 @@ class TitlesOfParts extends Model
         $instance->vector = Vector::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->vector && $this->vector->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

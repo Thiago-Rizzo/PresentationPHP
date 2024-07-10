@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Variant extends Model
@@ -27,5 +28,15 @@ class Variant extends Model
         $instance->i4 = I4::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->lpstr && $this->lpstr->write($xmlWriter);
+        $this->i4 && $this->i4->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

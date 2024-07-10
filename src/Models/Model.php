@@ -17,12 +17,10 @@ class Model
     public function getElement(XMLReader $xmlReader, DOMElement $element): ?DOMElement
     {
         if ($element->nodeName === $this->tag) {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement($this->tag, $element);
+            return $element;
         }
 
-        return $node;
+        return $xmlReader->getElement($this->tag, $element);
     }
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self

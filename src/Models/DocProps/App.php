@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
@@ -11,9 +12,10 @@ use ZipArchive;
 class App extends Model
 {
     public string $tag = 'Properties';
+    public static string $fileName = 'docProps/app.xml';
 
-    public string $xlmns = '';
-    public string $xlmnsVt = '';
+    public string $xmlns = '';
+    public string $xmlnsVt = '';
 
     public string $application = '';
     public string $appVersion = '';
@@ -35,7 +37,7 @@ class App extends Model
 
     public static function loadFile(ZipArchive $zipArchive, ?string $fileName = null): ?self
     {
-        $xml = $zipArchive->getFromName($fileName ?? 'docProps/app.xml');
+        $xml = $zipArchive->getFromName($fileName ?? self::$fileName);
         $xmlReader = Utils::registerXMLReader($xml);
 
         return self::load($xmlReader, $xmlReader->getElement('/Properties'));
@@ -50,8 +52,8 @@ class App extends Model
             return null;
         }
 
-        $instance->xlmns = $node->getAttribute('xmlns');
-        $instance->xlmnsVt = $node->getAttribute('xmlns:vt');
+        $instance->xmlns = $node->getAttribute('xmlns');
+        $instance->xmlnsVt = $node->getAttribute('xmlns:vt');
 
         $instance->headingPairs = HeadingPairs::load($xmlReader, $node);
         $instance->titlesOfParts = TitlesOfParts::load($xmlReader, $node);
@@ -72,5 +74,44 @@ class App extends Model
         $instance->words = $xmlReader->getElement('Words', $node)->nodeValue ?? '';
 
         return $instance;
+    }
+
+    public function writeFile(ZipArchive $zipArchive): void
+    {
+        $xmlWriter = new XMLWriter(XMLWriter::STORAGE_MEMORY);
+
+        $xmlWriter->startDocument('1.0', 'UTF-8', 'yes');
+
+        $this->write($xmlWriter);
+
+        $zipArchive->addFromString(self::$fileName, $xmlWriter->getData());
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->xmlns !== '' && $xmlWriter->writeAttribute('xmlns', $this->xmlns);
+        $this->xmlnsVt !== '' && $xmlWriter->writeAttribute('xmlns:vt', $this->xmlnsVt);
+
+        $this->application !== '' && $xmlWriter->writeElement('Application', $this->application);
+        $this->appVersion !== '' && $xmlWriter->writeElement('AppVersion', $this->appVersion);
+        $this->hiddenSlides !== '' && $xmlWriter->writeElement('HiddenSlides', $this->hiddenSlides);
+        $this->hyperlinksChanged !== '' && $xmlWriter->writeElement('HyperlinksChanged', $this->hyperlinksChanged);
+        $this->linksUpToDate !== '' && $xmlWriter->writeElement('LinksUpToDate', $this->linksUpToDate);
+        $this->mMClips !== '' && $xmlWriter->writeElement('MMClips', $this->mMClips);
+        $this->notes !== '' && $xmlWriter->writeElement('Notes', $this->notes);
+        $this->paragraphs !== '' && $xmlWriter->writeElement('Paragraphs', $this->paragraphs);
+        $this->presentationFormat !== '' && $xmlWriter->writeElement('PresentationFormat', $this->presentationFormat);
+        $this->scaleCrop !== '' && $xmlWriter->writeElement('ScaleCrop', $this->scaleCrop);
+        $this->sharedDoc !== '' && $xmlWriter->writeElement('SharedDoc', $this->sharedDoc);
+        $this->slides !== '' && $xmlWriter->writeElement('Slides', $this->slides);
+        $this->totalTime !== '' && $xmlWriter->writeElement('TotalTime', $this->totalTime);
+        $this->words !== '' && $xmlWriter->writeElement('Words', $this->words);
+
+        $this->headingPairs && $this->headingPairs->write($xmlWriter);
+        $this->titlesOfParts && $this->titlesOfParts->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

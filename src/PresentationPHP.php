@@ -17,6 +17,7 @@ use ThiagoRizzo\PresentationPHP\Models\Ppt\Themes\Theme;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\ViewProps;
 use ThiagoRizzo\PresentationPHP\Models\Rels\Relationships;
 use ThiagoRizzo\PresentationPHP\Reader\PowerPoint2007;
+use ZipArchive;
 
 class PresentationPHP
 {
@@ -80,18 +81,37 @@ class PresentationPHP
         return $powerPoint2007->read();
     }
 
-//    public function write(){
-//        $this->getApp()->write();
-//        $this->getCore()->write();
-//        $this->getPresentation()->write();
-//        $this->getPresProps()->write();
-//        $this->getSlides()->write();
-//        $this->getSlideMasters()->write();
-//        $this->getSlideLayouts()->write();
-//        $this->getThemes()->write();
-//        $this->getTableStyles()->write();
-//        $this->getViewProps()->write();
-//    }
+    /**
+     * Save PhpPresentation to file.
+     *
+     * @throws Exception
+     */
+    public function save(string $filename): void
+    {
+        if (empty($filename)) {
+            throw new Exception('filename is empty');
+        }
+
+        $zipAdapter = new ZipArchive();
+        $zipAdapter->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        $this->writeFiles($zipAdapter);
+
+        $zipAdapter->close();
+    }
+
+    public function writeFiles(ZipArchive $zipArchive): void
+    {
+        $this->getApp()->writeFile($zipArchive);
+        $this->getCore()->writeFile($zipArchive);
+
+//        $this->getPresProps()->writeFile();
+//        $this->getPresentation()->writeFile();
+//        $this->getTableStyles()->writeFile();
+//        $this->getViewProps()->writeFile();
+
+
+    }
 
     /**
      * @return Slide[]

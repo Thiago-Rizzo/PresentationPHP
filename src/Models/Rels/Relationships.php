@@ -13,7 +13,7 @@ class Relationships extends Model
     /** @var Relationship[] $relationships */
     public array $relationships = [];
 
-    public string $xlmns = 'http://schemas.openxmlformats.org/package/2006/relationships';
+    public string $xmlns = 'http://schemas.openxmlformats.org/package/2006/relationships';
 
     public static function loadFile(ZipArchive $zipArchive, ?string $fileName = null): ?self
     {

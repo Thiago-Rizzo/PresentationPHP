@@ -10,6 +10,8 @@ class GeneralTest extends PHPUnit\Framework\TestCase
     {
         $t = ThiagoRizzo\PresentationPHP\Reader\PowerPoint2007::load(realpath(__DIR__ . '/novo.pptx'));
 
+        $t->save(__DIR__ . '/novo.zip');
+
         echo 'test';
     }
 }
