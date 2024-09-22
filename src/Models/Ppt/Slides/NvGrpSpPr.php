@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class NvGrpSpPr extends Model
@@ -28,5 +29,16 @@ class NvGrpSpPr extends Model
         $instance->nvPr = NvPr::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->cNvPr && $this->cNvPr->write($xmlWriter);
+        $this->cNvGrpSpPr && $this->cNvGrpSpPr->write($xmlWriter);
+        $this->nvPr && $this->nvPr->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

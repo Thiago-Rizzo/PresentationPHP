@@ -9,23 +9,19 @@ use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Time extends Model
 {
+    public string $tag = '';
+
     public string $type = '';
     public string $value = '';
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->tagName === $tag) {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement($tag, $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
-        $instance->tag = $node->tagName;
 
         $instance->type = $node->getAttribute('xsi:type');
 

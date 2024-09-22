@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Sp extends Model
@@ -27,5 +28,16 @@ class Sp extends Model
         $instance->txBody = TxBody::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->nvSpPr && $this->nvSpPr->write($xmlWriter);
+        $this->spPr && $this->spPr->write($xmlWriter);
+        $this->txBody && $this->txBody->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

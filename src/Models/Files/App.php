@@ -1,18 +1,20 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
+namespace ThiagoRizzo\PresentationPHP\Models\Files;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
 use PhpOffice\Common\XMLWriter;
+use ThiagoRizzo\PresentationPHP\Models\DocProps\HeadingPairs;
+use ThiagoRizzo\PresentationPHP\Models\DocProps\TitlesOfParts;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
 
 class App extends Model
 {
-    public string $tag = 'Properties';
     public static string $fileName = 'docProps/app.xml';
+    public string $tag = 'Properties';
 
     public string $xmlns = '';
     public string $xmlnsVt = '';

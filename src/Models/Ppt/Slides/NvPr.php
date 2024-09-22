@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class NvPr extends Model
@@ -24,5 +25,14 @@ class NvPr extends Model
         $instance->ph = Ph::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->ph && $this->ph->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

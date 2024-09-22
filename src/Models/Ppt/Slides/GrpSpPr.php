@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class GrpSpPr extends Model
@@ -24,5 +25,14 @@ class GrpSpPr extends Model
         $instance->xfrm = Xfrm::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->xfrm && $this->xfrm->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

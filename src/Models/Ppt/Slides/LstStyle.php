@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class LstStyle extends Model
@@ -20,7 +21,7 @@ class LstStyle extends Model
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        $instance = new self($tag ?? 'a:lstStyle');
+        $instance = new static($tag ?? 'a:lstStyle');
 
         $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
@@ -38,5 +39,22 @@ class LstStyle extends Model
         $instance->lvl9pPr = LvlpPr::load($xmlReader, $node, 'a:lvl9pPr');
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->lvl1pPr && $this->lvl1pPr->write($xmlWriter);
+        $this->lvl2pPr && $this->lvl2pPr->write($xmlWriter);
+        $this->lvl3pPr && $this->lvl3pPr->write($xmlWriter);
+        $this->lvl4pPr && $this->lvl4pPr->write($xmlWriter);
+        $this->lvl5pPr && $this->lvl5pPr->write($xmlWriter);
+        $this->lvl6pPr && $this->lvl6pPr->write($xmlWriter);
+        $this->lvl7pPr && $this->lvl7pPr->write($xmlWriter);
+        $this->lvl8pPr && $this->lvl8pPr->write($xmlWriter);
+        $this->lvl9pPr && $this->lvl9pPr->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

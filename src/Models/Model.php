@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 
 class Model
 {
@@ -33,5 +34,11 @@ class Model
         }
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+        $xmlWriter->endElement();
     }
 }

@@ -4,12 +4,15 @@ namespace ThiagoRizzo\PresentationPHP\Models\Rels;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
 
 class Relationships extends Model
 {
+    public string $tag = 'Relationships';
+
     /** @var Relationship[] $relationships */
     public array $relationships = [];
 
@@ -25,17 +28,12 @@ class Relationships extends Model
 
     public static function load(XMLReader $xmlReader, DOMElement $element, ?string $tag = null): ?self
     {
-        if ($element->nodeName === 'Relationships') {
-            $node = $element;
-        } else {
-            $node = $xmlReader->getElement('Relationships', $element);
-        }
+        $instance = new static($tag);
 
+        $node = $instance->getElement($xmlReader, $element);
         if (!$node) {
             return null;
         }
-
-        $instance = new self();
 
         $relationships = $xmlReader->getElements('Relationship', $node);
         for ($i = 0; $i < $relationships->length; $i++) {
@@ -43,5 +41,16 @@ class Relationships extends Model
         }
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        foreach ($this->relationships as $relationship) {
+            $relationship->write($xmlWriter);
+        }
+
+        $xmlWriter->endElement();
     }
 }

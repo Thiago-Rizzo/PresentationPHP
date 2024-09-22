@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class RPr extends Model
@@ -25,5 +26,15 @@ class RPr extends Model
         $instance->smtClean = $node->getAttribute('smtClean');
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->lang !== '' && $xmlWriter->writeAttribute('lang', $this->lang);
+        $this->smtClean !== '' && $xmlWriter->writeAttribute('smtClean', $this->smtClean);
+
+        $xmlWriter->endElement();
     }
 }

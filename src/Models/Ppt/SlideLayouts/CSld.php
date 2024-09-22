@@ -1,9 +1,10 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts;
+namespace ThiagoRizzo\PresentationPHP\Models\Ppt\SlideLayouts;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SpTree;
 
@@ -29,5 +30,16 @@ class CSld extends Model
         $instance->spTree = SpTree::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->name !== '' && $xmlWriter->writeAttribute('name', $this->name);
+
+        $this->spTree && $this->spTree->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

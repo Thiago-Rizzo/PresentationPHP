@@ -1,10 +1,12 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts;
+namespace ThiagoRizzo\PresentationPHP\Models\Ppt\SlideLayouts;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
+use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts\MasterClrMapping;
 
 class ClrMapOvr extends Model
 {
@@ -23,5 +25,14 @@ class ClrMapOvr extends Model
         $instance->masterClrMapping = MasterClrMapping::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->masterClrMapping->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideMasters;
+namespace ThiagoRizzo\PresentationPHP\Models\Ppt\SlideMasters;
 
 use ThiagoRizzo\PresentationPHP\Models\Model;
 

@@ -1,18 +1,19 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\DocProps;
+namespace ThiagoRizzo\PresentationPHP\Models\Files;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
 use PhpOffice\Common\XMLWriter;
+use ThiagoRizzo\PresentationPHP\Models\DocProps\Time;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 use ThiagoRizzo\PresentationPHP\Utils;
 use ZipArchive;
 
 class Core extends Model
 {
-    public string $tag = 'cp:coreProperties';
     public static string $filename = 'docProps/core.xml';
+    public string $tag = 'cp:coreProperties';
 
     public string $xmlnsXsi = '';
     public string $xmlnsCp = '';
@@ -61,7 +62,6 @@ class Core extends Model
 
         return $instance;
     }
-
 
     public function writeFile(ZipArchive $zipArchive): void
     {

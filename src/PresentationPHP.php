@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace ThiagoRizzo\PresentationPHP;
 
 use Exception;
-use ThiagoRizzo\PresentationPHP\Models\DocProps\App;
-use ThiagoRizzo\PresentationPHP\Models\DocProps\Core;
+use ThiagoRizzo\PresentationPHP\Models\Files\App;
+use ThiagoRizzo\PresentationPHP\Models\Files\Core;
+use ThiagoRizzo\PresentationPHP\Models\Files\SlideLayout;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\Presentation;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\PresProps;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\Slide;
-use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts\SlideLayout;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideMasters\SlideMaster;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\TableStyles;
 use ThiagoRizzo\PresentationPHP\Models\Ppt\Themes\Theme;
@@ -105,11 +105,18 @@ class PresentationPHP
         $this->getApp()->writeFile($zipArchive);
         $this->getCore()->writeFile($zipArchive);
 
+        foreach ($this->getSlideMasters() as $slideMaster) {
+            $slideMaster->writeFile($zipArchive);
+        }
+
+        foreach ($this->getSlideLayouts() as $slideLayout) {
+            $slideLayout->writeFile($zipArchive);
+        }
+
 //        $this->getPresProps()->writeFile();
-//        $this->getPresentation()->writeFile();
 //        $this->getTableStyles()->writeFile();
 //        $this->getViewProps()->writeFile();
-
+//        $this->getPresentation()->writeFile();
 
     }
 

@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Xfrm extends Model
@@ -30,5 +31,17 @@ class Xfrm extends Model
         $instance->chExt = ChExt::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->off && $this->off->write($xmlWriter);
+        $this->ext && $this->ext->write($xmlWriter);
+        $this->chOff && $this->chOff->write($xmlWriter);
+        $this->chExt && $this->chExt->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }
