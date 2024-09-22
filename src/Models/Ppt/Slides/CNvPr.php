@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class CNvPr extends Model
@@ -26,5 +27,15 @@ class CNvPr extends Model
         $instance->name = $node->getAttribute('name');
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->id !== '' && $xmlWriter->writeAttribute('id', $this->id);
+        $this->name !== '' && $xmlWriter->writeAttribute('name', $this->name);
+
+        $xmlWriter->endElement();
     }
 }

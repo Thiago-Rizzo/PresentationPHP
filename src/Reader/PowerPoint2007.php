@@ -4,9 +4,9 @@ namespace ThiagoRizzo\PresentationPHP\Reader;
 
 use Exception;
 use Illuminate\Support\Str;
-use ThiagoRizzo\PresentationPHP\Models\DocProps\App;
-use ThiagoRizzo\PresentationPHP\Models\DocProps\Core;
-use ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts\SlideLayout;
+use ThiagoRizzo\PresentationPHP\Models\Files\App;
+use ThiagoRizzo\PresentationPHP\Models\Files\Core;
+use ThiagoRizzo\PresentationPHP\Models\Files\SlideLayout;
 use ThiagoRizzo\PresentationPHP\Models\Rels\Relationships;
 use ThiagoRizzo\PresentationPHP\PresentationPHP;
 use ZipArchive;

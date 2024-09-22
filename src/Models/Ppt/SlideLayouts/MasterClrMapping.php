@@ -1,9 +1,7 @@
 <?php
 
-namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides\SlideLayouts;
+namespace ThiagoRizzo\PresentationPHP\Models\Ppt\SlideLayouts;
 
-use DOMElement;
-use PhpOffice\Common\XMLReader;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class MasterClrMapping extends Model

@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class ChOff extends Model
@@ -26,5 +27,15 @@ class ChOff extends Model
         $instance->y = $node->getAttribute('y');
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->x !== '' && $xmlWriter->writeAttribute('x', $this->x);
+        $this->y !== '' && $xmlWriter->writeAttribute('y', $this->y);
+
+        $xmlWriter->endElement();
     }
 }

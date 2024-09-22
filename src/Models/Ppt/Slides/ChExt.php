@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class ChExt extends Model
@@ -26,5 +27,15 @@ class ChExt extends Model
         $instance->cy = $node->getAttribute('cy');
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->cx !== '' && $xmlWriter->writeAttribute('cx', $this->cx);
+        $this->cy !== '' && $xmlWriter->writeAttribute('cy', $this->cy);
+
+        $xmlWriter->endElement();
     }
 }

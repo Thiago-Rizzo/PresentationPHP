@@ -4,6 +4,7 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class Ph extends Model
@@ -28,5 +29,16 @@ class Ph extends Model
         $instance->idx = $node->getAttribute('idx');
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->type !== '' && $xmlWriter->writeAttribute('type', $this->type);
+        $this->sz !== '' && $xmlWriter->writeAttribute('sz', $this->sz);
+        $this->idx !== '' && $xmlWriter->writeAttribute('idx', $this->idx);
+
+        $xmlWriter->endElement();
     }
 }

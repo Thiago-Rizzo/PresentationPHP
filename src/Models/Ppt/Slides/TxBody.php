@@ -4,11 +4,13 @@ namespace ThiagoRizzo\PresentationPHP\Models\Ppt\Slides;
 
 use DOMElement;
 use PhpOffice\Common\XMLReader;
+use PhpOffice\Common\XMLWriter;
 use ThiagoRizzo\PresentationPHP\Models\Model;
 
 class TxBody extends Model
 {
     public string $tag = 'p:txBody';
+
     public ?BodyPr $bodyPr = null;
     public ?LstStyle $lstStyle = null;
     public ?P $p = null;
@@ -27,5 +29,16 @@ class TxBody extends Model
         $instance->p = P::load($xmlReader, $node);
 
         return $instance;
+    }
+
+    public function write(XMLWriter $xmlWriter): void
+    {
+        $xmlWriter->startElement($this->tag);
+
+        $this->bodyPr && $this->bodyPr->write($xmlWriter);
+        $this->lstStyle && $this->lstStyle->write($xmlWriter);
+        $this->p && $this->p->write($xmlWriter);
+
+        $xmlWriter->endElement();
     }
 }
